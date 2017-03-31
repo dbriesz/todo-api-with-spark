@@ -30,12 +30,25 @@ public class Sql2oTodoDaoTest {
     }
 
     @Test
-    public void addingTodoSetsId() throws Exception {
-        Todo todo = new Todo("Test");
-        long originalTodoId = todo.getId();
+    public void addingTodoSetsNewId() throws Exception {
+        Todo todo = newTestTodo();
+        int originalTodoId = todo.getId();
 
         dao.add(todo);
 
         assertNotEquals(originalTodoId, todo.getId());
+    }
+
+    @Test
+    public void addedTodosAreReturnedFromFindAll() throws Exception {
+        Todo todo = newTestTodo();
+
+        dao.add(todo);
+
+        assertEquals(1, dao.findAll().size());
+    }
+
+    private Todo newTestTodo() {
+        return new Todo("Test");
     }
 }
