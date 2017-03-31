@@ -1,21 +1,20 @@
 package com.teamtreehouse.techdegrees.model;
 
 public class Todo {
-    private int id;
+    private long id;
     private String name;
     private boolean completed;
 
-    public Todo(int id, String name, boolean completed) {
-        this.id = id;
+    public Todo(long id, String name, boolean completed) {
         this.name = name;
         this.completed = completed;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -49,7 +48,7 @@ public class Todo {
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = (int) (id ^ (id >>> 32));
         result = 31 * result + name.hashCode();
         result = 31 * result + (completed ? 1 : 0);
         return result;

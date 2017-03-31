@@ -20,7 +20,7 @@ public class Sql2oTodoDao implements TodoDao {
     public void add(Todo todo) throws DaoException {
         String sql = "INSERT INTO todos(id, name, completed) VALUES (:id, :name, :completed)";
         try (Connection con = sql2o.open()) {
-            int id = (int) con.createQuery(sql)
+            long id = (long) con.createQuery(sql)
                     .bind(todo)
                     .executeUpdate()
                     .getKey();
@@ -39,7 +39,7 @@ public class Sql2oTodoDao implements TodoDao {
     }
 
     @Override
-    public Todo findById(int id) {
+    public Todo findById(long id) {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM todos WHERE id = :id")
                     .addParameter("id", id)
