@@ -30,7 +30,7 @@ public class Sql2oTodoDaoTest {
     }
 
     @Test
-    public void addingTodoSetsNewId() throws Exception {
+    public void addingTodoSetsId() throws Exception {
         Todo todo = newTestTodo();
         int originalTodoId = todo.getId();
 
@@ -46,6 +46,21 @@ public class Sql2oTodoDaoTest {
         dao.add(todo);
 
         assertEquals(1, dao.findAll().size());
+    }
+
+    @Test
+    public void noTodosReturnsEmptyList() throws Exception {
+        assertEquals(0, dao.findAll().size());
+    }
+
+    @Test
+    public void existingTodosCanBeFoundById() throws Exception {
+        Todo todo = newTestTodo();
+        dao.add(todo);
+
+        Todo foundTodo = dao.findById(todo.getId());
+
+        assertEquals(todo, foundTodo);
     }
 
     private Todo newTestTodo() {
