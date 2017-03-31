@@ -1,0 +1,1 @@
+This project takes a working Angular.js Todo app and provides a back-end using RESTful practices
