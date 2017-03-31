@@ -31,7 +31,7 @@ public class Sql2oTodoDaoTest {
 
     @Test
     public void addingTodoSetsId() throws Exception {
-        Todo todo = new Todo(2, "Test", false);
+        Todo todo = new Todo("Test");
         long originalTodoId = todo.getId();
 
         dao.add(todo);
