@@ -10,13 +10,24 @@ import org.sql2o.Sql2o;
 
 import static spark.Spark.*;
 
-public class App {
+public class Api {
 
     public static void main(String[] args) {
 //        staticFileLocation("/public");
 //        get("/api/v1/", (req, res) -> "Hello!");
 
-        Sql2o sql2o = new Sql2o("jdbc:h2:~/todos.db;INIT=RUNSCRIPT from 'classpath:db/init.sql'", "", "");
+        String datasource = "jdbc:h2:~/todos.db";
+        if (args.length > 0) {
+            if (args.length != 2) {
+                System.out.println("java Api <port> <datasource>");
+                System.exit(0);
+            }
+            port(Integer.parseInt(args[0]));
+            datasource = args[1];
+        }
+        Sql2o sql2o = new Sql2o(
+                String.format("%s;INIT=RUNSCRIPT from 'classpath:db/init.sql'", datasource),
+                "", "");
         TodoDao todoDao = new Sql2oTodoDao(sql2o);
         Gson gson = new Gson();
 
