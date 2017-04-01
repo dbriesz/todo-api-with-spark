@@ -1,6 +1,8 @@
 package com.teamtreehouse.techdegrees;
 
 import com.google.gson.Gson;
+import com.teamtreehouse.techdegrees.dao.Sql2oTodoDao;
+import com.teamtreehouse.techdegrees.model.Todo;
 import com.teamtreehouse.testing.ApiClient;
 import com.teamtreehouse.testing.ApiResponse;
 import org.junit.*;
@@ -20,6 +22,7 @@ public class ApiTest {
     private Connection conn;
     private ApiClient client;
     private Gson gson;
+    private Sql2oTodoDao todoDao;
 
     @BeforeClass
     public static void startServer() {
@@ -35,6 +38,7 @@ public class ApiTest {
     @Before
     public void setUp() throws Exception {
         Sql2o sql2o = new Sql2o(TEST_DATASOURCE + ";INIT=RUNSCRIPT from 'classpath:db/init.sql'", "", "");
+        todoDao = new Sql2oTodoDao(sql2o);
         conn = sql2o.open();
         client = new ApiClient("http://localhost:" + PORT);
         gson = new Gson();
@@ -53,5 +57,21 @@ public class ApiTest {
         ApiResponse res = client.request("POST", "/api/v1/todos", gson.toJson(values));
 
         assertEquals(201, res.getStatus());
+    }
+
+    @Test
+    public void todosCanBeAccessedById() throws Exception {
+        Todo todo = newTestTodo();
+        todoDao.add(todo);
+
+        ApiResponse res = client.request("GET",
+                "/api/v1/todos/" + todo.getId());
+        Todo retrieved = gson.fromJson(res.getBody(), Todo.class);
+
+        assertEquals(todo, retrieved);
+    }
+
+    private Todo newTestTodo() {
+        return new Todo("Test");
     }
 }
