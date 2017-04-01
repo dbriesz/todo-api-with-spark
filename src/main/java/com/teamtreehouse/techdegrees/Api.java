@@ -16,8 +16,6 @@ import static spark.Spark.*;
 public class Api {
 
     public static void main(String[] args) {
-//        staticFileLocation("/public");
-//        get("/api/v1/", (req, res) -> "Hello!");
 
         String datasource = "jdbc:h2:~/todos.db";
         if (args.length > 0) {
@@ -33,6 +31,9 @@ public class Api {
                 "", "");
         TodoDao todoDao = new Sql2oTodoDao(sql2o);
         Gson gson = new Gson();
+
+        staticFileLocation("/public");
+        get("/api/v1/", (req, res) -> "Hello!");
 
         post("/api/v1/todos", "application/json", (req, res) -> {
             Todo todo = gson.fromJson(req.body(), Todo.class);
@@ -51,6 +52,17 @@ public class Api {
                 throw new ApiError(404, "Could not find todo with id " + id);
             }
             return todo;
+        }, gson::toJson);
+
+        post("/api/v1/todos/:id/save", (req, res) -> {
+           int id = Integer.parseInt(req.params("id"));
+           Todo todo = todoDao.findById(id);
+            if (todo == null) {
+                throw new ApiError(404, "Could not find todo with id " + id);
+            }
+           todoDao.save(todo);
+           res.status(201);
+           return todo;
         }, gson::toJson);
 
         exception(ApiError.class, (exc, req, res) -> {

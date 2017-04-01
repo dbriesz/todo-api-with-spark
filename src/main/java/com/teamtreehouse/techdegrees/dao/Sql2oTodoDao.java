@@ -32,6 +32,21 @@ public class Sql2oTodoDao implements TodoDao {
     }
 
     @Override
+    public void save(Todo todo) throws DaoException {
+        String sql = "UPDATE todos(name) VALUES (:name) WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            int id = (int) con.createQuery(sql)
+                    .bind(todo)
+                    .executeUpdate()
+                    .getKey();
+
+            todo.setId(id);
+        } catch (Sql2oException ex) {
+            throw new DaoException(ex, "Problem saving todo");
+        }
+    }
+
+    @Override
     public List<Todo> findAll() {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM todos")
