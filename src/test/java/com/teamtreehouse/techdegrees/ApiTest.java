@@ -78,6 +78,21 @@ public class ApiTest {
         assertEquals(404, res.getStatus());
     }
 
+    @Test
+    public void savingTodosReturnsUpdatedStatus() throws Exception {
+        Todo todo = newTestTodo();
+        todoDao.add(todo);
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", "Test todo 1");
+        values.put("completed", true);
+
+        ApiResponse res = client.request("PUT",
+                String.format("/api/v1/todos/%d", todo.getId()),
+                gson.toJson(values));
+
+        assertEquals(200, res.getStatus());
+    }
+
     private Todo newTestTodo() {
         return new Todo("Test");
     }

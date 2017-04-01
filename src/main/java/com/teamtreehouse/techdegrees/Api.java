@@ -54,15 +54,17 @@ public class Api {
             return todo;
         }, gson::toJson);
 
-        post("/api/v1/todos/:id/save", (req, res) -> {
+        put("/api/v1/todos/:id", (req, res) -> {
            int id = Integer.parseInt(req.params("id"));
            Todo todo = todoDao.findById(id);
             if (todo == null) {
                 throw new ApiError(404, "Could not find todo with id " + id);
             }
-           todoDao.save(todo);
-           res.status(201);
-           return todo;
+            todo.setName(gson.fromJson(req.body(), Todo.class).getName());
+            todo.setCompleted(gson.fromJson(req.body(), Todo.class).isCompleted());
+            todoDao.save(todo);
+            res.status(200);
+            return todo;
         }, gson::toJson);
 
         exception(ApiError.class, (exc, req, res) -> {
