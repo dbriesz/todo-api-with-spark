@@ -8,6 +8,9 @@ import com.teamtreehouse.techdegrees.exc.ApiError;
 import com.teamtreehouse.techdegrees.model.Todo;
 import org.sql2o.Sql2o;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static spark.Spark.*;
 
 public class Api {
@@ -49,6 +52,16 @@ public class Api {
             }
             return todo;
         }, gson::toJson);
+
+        exception(ApiError.class, (exc, req, res) -> {
+            ApiError err = (ApiError) exc;
+            Map<String, Object> jsonMap = new HashMap<>();
+            jsonMap.put("status", err.getStatus());
+            jsonMap.put("errorMessage", err.getMessage());
+            res.type("application/json");
+            res.status(err.getStatus());
+            res.body(gson.toJson(jsonMap));
+        });
 
         after((req, res) -> {
             res.type("application/json");

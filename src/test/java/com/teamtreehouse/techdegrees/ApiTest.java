@@ -71,6 +71,13 @@ public class ApiTest {
         assertEquals(todo, retrieved);
     }
 
+    @Test
+    public void missingTodosReturnNotFoundStatus() throws Exception {
+        ApiResponse res = client.request("GET", "/api/v1/todos/42");
+
+        assertEquals(404, res.getStatus());
+    }
+
     private Todo newTestTodo() {
         return new Todo("Test");
     }
