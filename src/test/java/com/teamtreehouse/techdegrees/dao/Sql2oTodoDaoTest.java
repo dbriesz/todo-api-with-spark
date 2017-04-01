@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class Sql2oTodoDaoTest {
@@ -61,6 +63,30 @@ public class Sql2oTodoDaoTest {
         Todo foundTodo = dao.findById(todo.getId());
 
         assertEquals(todo, foundTodo);
+    }
+
+    @Test
+    public void todosCanBeUpdated() throws Exception {
+        Todo todo = newTestTodo();
+        dao.add(todo);
+
+        Todo foundTodo = dao.findById(todo.getId());
+        todo.setName("Test todo 1");
+        todo.setCompleted(true);
+        dao.save(todo);
+
+        assertNotEquals(todo, foundTodo);
+    }
+
+    @Test
+    public void todosCanBeDeleted() throws Exception {
+        Todo todo = newTestTodo();
+        dao.add(todo);
+
+        dao.delete(todo);
+        List<Todo> todos = dao.findAll();
+
+        assertEquals(0, todos.size());
     }
 
     private Todo newTestTodo() {

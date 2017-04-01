@@ -93,6 +93,19 @@ public class ApiTest {
         assertEquals(200, res.getStatus());
     }
 
+    @Test
+    public void deletingTodosReturnsDeletedStatus() throws Exception {
+        Todo todo = newTestTodo();
+        todoDao.add(todo);
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", "Test");
+
+        ApiResponse res = client.request("DELETE", String.format("/api/v1/todos/%d", todo.getId()),
+                gson.toJson(values));
+
+        assertEquals(200, res.getStatus());
+    }
+
     private Todo newTestTodo() {
         return new Todo("Test");
     }

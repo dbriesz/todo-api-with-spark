@@ -47,6 +47,19 @@ public class Sql2oTodoDao implements TodoDao {
     }
 
     @Override
+    public void delete(Todo todo) throws DaoException {
+        String sql = "DELETE FROM todos WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("id", todo.getId())
+                    .executeUpdate();
+
+        } catch (Sql2oException ex) {
+            throw new DaoException(ex, "Problem deleting todo");
+        }
+    }
+
+    @Override
     public List<Todo> findAll() {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM todos")

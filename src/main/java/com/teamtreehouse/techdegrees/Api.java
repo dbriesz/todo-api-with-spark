@@ -67,6 +67,17 @@ public class Api {
             return todo;
         }, gson::toJson);
 
+        delete("/api/v1/todos/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            Todo todo = todoDao.findById(id);
+            if (todo == null) {
+                throw new ApiError(404, "Could not find todo with id " + id);
+            }
+            todoDao.delete(todo);
+            res.status(200);
+            return todo;
+        }, gson::toJson);
+
         exception(ApiError.class, (exc, req, res) -> {
             ApiError err = (ApiError) exc;
             Map<String, Object> jsonMap = new HashMap<>();
