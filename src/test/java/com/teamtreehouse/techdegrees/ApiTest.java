@@ -103,7 +103,7 @@ public class ApiTest {
         ApiResponse res = client.request("DELETE", String.format("/api/v1/todos/%d", todo.getId()),
                 gson.toJson(values));
 
-        assertEquals(200, res.getStatus());
+        assertEquals(204, res.getStatus());
     }
 
     private Todo newTestTodo() {

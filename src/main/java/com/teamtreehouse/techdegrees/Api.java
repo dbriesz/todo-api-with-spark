@@ -74,7 +74,7 @@ public class Api {
                 throw new ApiError(404, "Could not find todo with id " + id);
             }
             todoDao.delete(todo);
-            res.status(200);
+            res.status(204);
             return todo;
         }, gson::toJson);
 
